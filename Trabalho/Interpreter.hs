@@ -1,13 +1,6 @@
 module Interpreter where
 
-
-data Expr = BTrue
-          | BFalse
-          | Num Int
-          | Add Expr Expr
-          | And Expr Expr
-          | If Expr Expr Expr
-          deriving Show
+import Lexer
 
 
 step :: Expr -> Maybe Expr
@@ -31,23 +24,6 @@ step (If e e1 e2) = case step e of
 step e = Just e
 
 
-data T = TBool
-       | TNum
-       deriving Show
 
-typeof :: Expr -> Maybe Ty
-typeof BTrue = Just TBool
-typeof BFalse = Just TBool
-typeof (Num _) = Just TNum
-typeof (Add e1 e2) = case (typeof e1) of
-                        Just TNum -> case (typeof e2) of
-                                        Just TNum -> Just TNum
-                                        _         -> Nothing
-                        _         -> Nothing
-typeof (And e1 e2) = case (typeof e1, typeof e2) of
-                        (Just TBool, Just TBool) -> Just TBool
-                        _                        -> Nothing
-
-
-
-
+-- Criar duas funções : typecheck vai chamar o typeof e retornar a propria expressão
+--                      eval vai chamar recursivamente a função step até que o termo vire um valor
