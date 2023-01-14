@@ -16,6 +16,8 @@ data Expr = BTrue
           | Sub Expr Expr 
           | Mul Expr Expr 
           | And Expr Expr 
+          | Or Expr Expr 
+          | Not Expr 
           | If Expr Expr Expr 
           | Var String
           | Lam String Ty Expr 
@@ -31,6 +33,8 @@ data Token = TokenTrue
            | TokenSub
            | TokenMul
            | TokenAnd
+           | TokenOr
+           | TokenNot
            | TokenIf 
            | TokenThen
            | TokenElse 
@@ -46,7 +50,7 @@ data Token = TokenTrue
            deriving Show
 
 isToken :: Char -> Bool
-isToken c = elem c "->&|="
+isToken c = elem c "->&|!="
 
 lexer :: String -> [Token]
 lexer []        = [] 
@@ -82,5 +86,7 @@ lexSymbol :: String -> [Token]
 lexSymbol cs = case span isToken cs of
                    ("->", rest) -> TokenArrow  : lexer rest
                    ("&&", rest) -> TokenAnd    : lexer rest
+                   ("||", rest) -> TokenOr     : lexer rest
+                   ("!", rest)  -> TokenNot    : lexer rest
                    ("==", rest) -> TokenEq     : lexer rest
                    _            -> error "Lexical error: símbolo inválido!"

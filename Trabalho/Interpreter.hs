@@ -14,6 +14,8 @@ subst x n (Add e1 e2) = Add (subst x n e1) (subst x n e2)
 subst x n (Sub e1 e2) = Sub (subst x n e1) (subst x n e2)
 subst x n (Mul e1 e2) = Mul (subst x n e1) (subst x n e2)
 subst x n (And e1 e2) = And (subst x n e1) (subst x n e2)
+subst x n (Or e1 e2)  = Or (subst x n e1) (subst x n e2)
+subst x n (Not e) = Not (subst x n e)
 subst x n (If e e1 e2) = If (subst x n e) (subst x n e1) (subst x n e2)
 subst x n (Paren e) = Paren (subst x n e)
 subst x n (Eq e1 e2) = Eq (subst x n e1) (subst x n e2)
@@ -55,6 +57,13 @@ step (And BFalse _) = Just BFalse
 step (And e1 e2) = case step e1 of 
                      Just e1' -> Just (And e1' e2)
                      _        -> Nothing
+step (Or BFalse e2) = Just e2 
+step (Or BTrue _) = Just BTrue 
+step (Or e1 e2) = case step e1 of 
+                     Just e1' -> Just (Or e1' e2)
+                     _        -> Nothing  
+step (Not BFalse) = Just BTrue 
+step (Not BTrue) = Just BFalse                                        
 step (If BTrue e1 _) = Just e1 
 step (If BFalse _ e2) = Just e2 
 step (If e e1 e2) = case step e of 
