@@ -21,7 +21,7 @@ happyExpList = Happy_Data_Array.listArray (0,31) ([912,2,12288,0,0,228,36899,291
 {-# NOINLINE happyExpListPerState #-}
 happyExpListPerState st =
     token_strs_expected
-  where token_strs = ["error","%dummy","%start_parser","Exp","num","'+'","'&'","\"true\"","\"false\"","\"if\"","\"then\"","\"else\"","%eof"]
+  where token_strs = ["error","%dummy","%start_parser","Exp","num","'+'","'&'","true","false","if","then","else","%eof"]
         bit_start = st * 13
         bit_end = (st + 1) * 13
         read_bit = readArrayBit happyExpList
@@ -207,7 +207,8 @@ parser tks = happyRunIdentity happySomeParser where
 happySeq = happyDontSeq
 
 
-
+parseError :: [Token] -> a 
+parseError _ = error "Syntax error!"
 {-# LINE 1 "templates/GenericTemplate.hs" #-}
 -- $Id: GenericTemplate.hs,v 1.26 2005/01/14 14:47:22 simonmar Exp $
 
