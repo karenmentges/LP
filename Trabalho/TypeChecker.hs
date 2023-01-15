@@ -10,19 +10,19 @@ typeof _ BFalse = Just TBool
 typeof _ (Num _) = Just TNum
 typeof ctx (Add e1 e2) = case (typeof ctx e1, typeof ctx e2) of 
                            (Just TNum, Just TNum) -> Just TNum
-                           _                       -> Nothing 
+                           _                      -> Nothing 
 typeof ctx (Sub e1 e2) = case (typeof ctx e1, typeof ctx e2) of 
                            (Just TNum, Just TNum) -> Just TNum
-                           _                       -> Nothing 
+                           _                      -> Nothing 
 typeof ctx (Mul e1 e2) = case (typeof ctx e1, typeof ctx e2) of 
                            (Just TNum, Just TNum) -> Just TNum
-                           _                       -> Nothing                            
+                           _                      -> Nothing                            
 typeof ctx (And e1 e2) = case (typeof ctx e1, typeof ctx  e2) of 
                            (Just TBool, Just TBool) -> Just TBool 
-                           _                         -> Nothing
+                           _                        -> Nothing
 typeof ctx (Or e1 e2) = case (typeof ctx e1, typeof ctx  e2) of 
                            (Just TBool, Just TBool) -> Just TBool 
-                           _                         -> Nothing
+                           _                        -> Nothing
 typeof ctx (Not e) = case typeof ctx e of 
                            Just TBool -> Just TBool 
                            _          -> Nothing                                                      
@@ -51,17 +51,11 @@ typeof ctx (Eq e1 e2) = case (typeof ctx e1, typeof ctx e2) of
                                                   Nothing
                           _                  -> Nothing
 typeof ctx (Bg e1 e2) = case (typeof ctx e1, typeof ctx e2) of 
-                          (Just t1, Just t2) -> if t1 == t2 then
-                                                  Just TBool
-                                                else 
-                                                  Nothing
-                          _                  -> Nothing
+                           (Just TNum, Just TNum) -> Just TNum
+                           _                      -> Nothing    
 typeof ctx (BE e1 e2) = case (typeof ctx e1, typeof ctx e2) of 
-                          (Just t1, Just t2) -> if t1 == t2 then
-                                                  Just TBool
-                                                else 
-                                                  Nothing
-                          _                  -> Nothing                                                    
+                           (Just TNum, Just TNum) -> Just TNum
+                           _                      -> Nothing                                                    
 typeof ctx (Paren e) = typeof ctx e 
 
 
