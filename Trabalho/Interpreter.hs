@@ -19,6 +19,8 @@ subst x n (Not e) = Not (subst x n e)
 subst x n (If e e1 e2) = If (subst x n e) (subst x n e1) (subst x n e2)
 subst x n (Paren e) = Paren (subst x n e)
 subst x n (Eq e1 e2) = Eq (subst x n e1) (subst x n e2)
+subst x n (Bg e1 e2) = Bg (subst x n e1) (subst x n e2)
+subst x n (BE e1 e2) = BE (subst x n e1) (subst x n e2)
 subst x n e = e 
 
 
@@ -87,6 +89,26 @@ step (Eq e1 e2) | isvalue e1 && isvalue e2 = if (e1 == e2) then
                 | otherwise = case step e1 of 
                                 Just e1' -> Just (Eq e1' e2)
                                 _        -> Nothing 
+step (Bg (Num n1) (Num n2)) = if (n1 > n2) then
+                                Just BTrue 
+                              else 
+                                Just BFalse 
+step (Bg (Num n1) e2) = case step e2 of 
+                           Just e2' -> Just (Bg (Num n1) e2')
+                           _        -> Nothing
+step (Bg e1 e2) = case step e1 of 
+                     Just e1' -> Just (Bg e1' e2)
+                     _        -> Nothing                                 
+step (BE (Num n1) (Num n2)) = if (n1 >= n2) then
+                                Just BTrue 
+                              else 
+                                Just BFalse 
+step (BE (Num n1) e2) = case step e2 of 
+                           Just e2' -> Just (BE (Num n1) e2')
+                           _        -> Nothing
+step (BE e1 e2) = case step e1 of 
+                     Just e1' -> Just (BE e1' e2)
+                     _        -> Nothing                                                                
 step e = Just e 
 
 

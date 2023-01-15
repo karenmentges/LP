@@ -24,6 +24,8 @@ data Expr = BTrue
           | App Expr Expr 
           | Paren Expr
           | Eq Expr Expr
+          | Bg Expr Expr
+          | BE Expr Expr
           deriving (Show, Eq)
 
 data Token = TokenTrue 
@@ -47,6 +49,8 @@ data Token = TokenTrue
            | TokenBoolean
            | TokenNumber
            | TokenEq
+           | TokenBg
+           | TokenBE
            deriving Show
 
 isToken :: Char -> Bool
@@ -89,4 +93,6 @@ lexSymbol cs = case span isToken cs of
                    ("||", rest) -> TokenOr     : lexer rest
                    ("!", rest)  -> TokenNot    : lexer rest
                    ("==", rest) -> TokenEq     : lexer rest
+                   (">", rest)  -> TokenBg     : lexer rest
+                   (">=", rest) -> TokenBE     : lexer rest
                    _            -> error "Lexical error: símbolo inválido!"

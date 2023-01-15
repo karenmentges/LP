@@ -17,6 +17,8 @@ import Lexer
     "||"        { TokenOr }
     "!"         { TokenNot }
     "=="        { TokenEq }
+    ">"         { TokenBg }
+    ">="        { TokenBE }
     true        { TokenTrue }
     false       { TokenFalse }
     if          { TokenIf }
@@ -34,10 +36,10 @@ import Lexer
 %nonassoc if then else
 %left '+' '-'
 %left '*'
-%left "&&"
 %left "||"
+%left "&&"
 %left "!"
-%left "=="
+%left "==" ">" ">="
 
 %% 
 
@@ -56,6 +58,8 @@ Exp     : num                        { Num $1 }
         | Exp Exp                    { App $1 $2 }
         | '(' Exp ')'                { Paren $2 }
         | Exp "==" Exp               { Eq $1 $3 }
+        | Exp ">" Exp                { Bg $1 $3 }
+        | Exp ">=" Exp               { BE $1 $3 }
 
 Type    : Bool                       { TBool }
         | Number                     { TNum }
