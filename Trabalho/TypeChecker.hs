@@ -55,7 +55,8 @@ typeof ctx (Bg e1 e2) = case (typeof ctx e1, typeof ctx e2) of
                            _                      -> Nothing    
 typeof ctx (BE e1 e2) = case (typeof ctx e1, typeof ctx e2) of 
                            (Just TNum, Just TNum) -> Just TNum
-                           _                      -> Nothing                                                    
+                           _                      -> Nothing   
+-- typeof ctx (Let v e1 e2)   ??
 typeof ctx (Paren e) = typeof ctx e 
 
 

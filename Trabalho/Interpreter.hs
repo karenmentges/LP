@@ -21,6 +21,7 @@ subst x n (Paren e) = Paren (subst x n e)
 subst x n (Eq e1 e2) = Eq (subst x n e1) (subst x n e2)
 subst x n (Bg e1 e2) = Bg (subst x n e1) (subst x n e2)
 subst x n (BE e1 e2) = BE (subst x n e1) (subst x n e2)
+subst x n (Let y e1 e2) = Let y (subst x n e1) (subst x n e2)
 subst x n e = e 
 
 
@@ -108,7 +109,11 @@ step (BE (Num n1) e2) = case step e2 of
                            _        -> Nothing
 step (BE e1 e2) = case step e1 of 
                      Just e1' -> Just (BE e1' e2)
-                     _        -> Nothing                                                                
+                     _        -> Nothing   
+step (Let y e1 e2) | isvalue e1 = Just (subst y e1 e2)
+                   | otherwise = case step e1 of 
+                                    Just e1' -> Just (Let y e1' e2)
+                                    _        -> Nothing 
 step e = Just e 
 
 

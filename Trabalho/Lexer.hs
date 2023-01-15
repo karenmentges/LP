@@ -26,6 +26,7 @@ data Expr = BTrue
           | Eq Expr Expr
           | Bg Expr Expr
           | BE Expr Expr
+          | Let String Expr Expr 
           deriving (Show, Eq)
 
 data Token = TokenTrue 
@@ -51,6 +52,9 @@ data Token = TokenTrue
            | TokenEq
            | TokenBg
            | TokenBE
+           | TokenLet
+           | TokenAtr
+           | TokenIn
            deriving Show
 
 isToken :: Char -> Bool
@@ -84,6 +88,8 @@ lexKW cs = case span isAlpha cs of
              ("else", rest)    -> TokenElse : lexer rest 
              ("Bool", rest)    -> TokenBoolean : lexer rest 
              ("Number", rest)  -> TokenNumber : lexer rest 
+             ("let", rest)     -> TokenLet : lexer rest 
+             ("in", rest)      -> TokenIn: lexer rest 
              (var, rest)       -> TokenVar var : lexer rest 
 
 lexSymbol :: String -> [Token]
@@ -95,4 +101,5 @@ lexSymbol cs = case span isToken cs of
                    ("==", rest) -> TokenEq     : lexer rest
                    (">", rest)  -> TokenBg     : lexer rest
                    (">=", rest) -> TokenBE     : lexer rest
+                   ("=", rest)  -> TokenAtr    : lexer rest
                    _            -> error "Lexical error: símbolo inválido!"
