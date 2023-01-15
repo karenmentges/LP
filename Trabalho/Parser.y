@@ -35,6 +35,10 @@ import Lexer
     let         { TokenLet }
     "="         { TokenAtr }
     in          { TokenIn }
+    '{'         { TokenLPair }
+    '}'         { TokenRPair }
+    ','         { TokenComma }
+    '.'         { TokenProj }
 
 %nonassoc if then else
 %left '+' '-'
@@ -64,6 +68,8 @@ Exp     : num                        { Num $1 }
         | Exp ">" Exp                { Bg $1 $3 }
         | Exp ">=" Exp               { BE $1 $3 }
         | let var "=" Exp in Exp     { Let $2 $4 $6 }
+        | '{' Exp ',' Exp '}'        { Pair $2 $4 }
+        | Exp '.' num                { Proj $1 $3 }
 
 Type    : Bool                       { TBool }
         | Number                     { TNum }

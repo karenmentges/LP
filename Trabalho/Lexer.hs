@@ -6,8 +6,8 @@ import Data.Char
 data Ty = TBool
         | TNum
         | TFun Ty Ty
+        | TPair Ty Ty
         deriving (Show, Eq)
-
 
 data Expr = BTrue
           | BFalse
@@ -27,6 +27,8 @@ data Expr = BTrue
           | Bg Expr Expr
           | BE Expr Expr
           | Let String Expr Expr 
+          | Pair Expr Expr
+          | Proj Expr Int
           deriving (Show, Eq)
 
 data Token = TokenTrue 
@@ -55,6 +57,10 @@ data Token = TokenTrue
            | TokenLet
            | TokenAtr
            | TokenIn
+           | TokenLPair
+           | TokenRPair 
+           | TokenComma
+           | TokenProj
            deriving Show
 
 isToken :: Char -> Bool
@@ -69,6 +75,10 @@ lexer ('\\':cs) = TokenLam : lexer cs
 lexer (':':cs)  = TokenColon : lexer cs
 lexer ('(':cs)  = TokenLParen : lexer cs
 lexer (')':cs)  = TokenRParen : lexer cs
+lexer ('{':cs)  = TokenLPair : lexer cs
+lexer ('}':cs)  = TokenRPair : lexer cs
+lexer (',':cs)  = TokenComma : lexer cs
+lexer ('.':cs)  = TokenProj : lexer cs
 lexer (c:cs)    | isSpace c = lexer cs 
                 | isDigit c = lexNum (c:cs)
                 | isAlpha c = lexKW (c:cs)
@@ -89,7 +99,7 @@ lexKW cs = case span isAlpha cs of
              ("Bool", rest)    -> TokenBoolean : lexer rest 
              ("Number", rest)  -> TokenNumber : lexer rest 
              ("let", rest)     -> TokenLet : lexer rest 
-             ("in", rest)      -> TokenIn: lexer rest 
+             ("in", rest)      -> TokenIn: lexer rest  
              (var, rest)       -> TokenVar var : lexer rest 
 
 lexSymbol :: String -> [Token]

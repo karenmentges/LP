@@ -57,7 +57,14 @@ typeof ctx (BE e1 e2) = case (typeof ctx e1, typeof ctx e2) of
                            (Just TNum, Just TNum) -> Just TNum
                            _                      -> Nothing   
 -- typeof ctx (Let v e1 e2)   ??
-typeof ctx (Paren e) = typeof ctx e 
+typeof ctx (Pair e1 e2) = case (typeof ctx e1, typeof ctx e2) of 
+                           (Just t1, Just t2) -> Just (TPair t1 t2)
+                           _                  -> Nothing 
+typeof ctx (Proj e v) = case (typeof ctx e, v) of 
+                           (Just (TPair t11 t12), 1) -> Just t11
+                           (Just (TPair t11 t12), 2) -> Just t12
+                           _                         -> Nothing                            
+typeof ctx (Paren e) = typeof ctx e    
 
 
 typecheck :: Expr -> Expr 

@@ -22,6 +22,8 @@ subst x n (Eq e1 e2) = Eq (subst x n e1) (subst x n e2)
 subst x n (Bg e1 e2) = Bg (subst x n e1) (subst x n e2)
 subst x n (BE e1 e2) = BE (subst x n e1) (subst x n e2)
 subst x n (Let y e1 e2) = Let y (subst x n e1) (subst x n e2)
+subst x n (Pair e1 e2) = Pair (subst x n e1) (subst x n e2)
+subst x n (Proj e v) = Proj (subst x n e) v
 subst x n e = e 
 
 
@@ -113,7 +115,25 @@ step (BE e1 e2) = case step e1 of
 step (Let y e1 e2) | isvalue e1 = Just (subst y e1 e2)
                    | otherwise = case step e1 of 
                                     Just e1' -> Just (Let y e1' e2)
-                                    _        -> Nothing 
+                                    _        -> Nothing                                     
+step (Pair e1 e2) | isvalue e1 && isvalue e2 = Just (Pair e1 e2)
+                  | isvalue e1 = case step e2 of 
+                                 Just e2' -> Just (Pair e1 e2')
+                                 _        -> Nothing
+                  | otherwise = case step e1 of 
+                                Just e1' -> Just (Pair e1' e2)
+                                _        -> Nothing     
+step (Proj (Pair e1 e2) v) | isvalue e1 && isvalue e2 = if v == 1 
+                                                          then Just e1
+                                                          else if v == 2
+                                                            then Just e2
+                                                            else error "Index error!"
+                           | isvalue e1 = case step e2 of 
+                                            Just e2' -> Just (Proj (Pair e1 e2') v)
+                                            _        -> Nothing
+                           | otherwise = case step e1 of 
+                                            Just e1' -> Just (Proj (Pair e1' e2) v)
+                                            _        -> Nothing                                                                
 step e = Just e 
 
 
