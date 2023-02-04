@@ -51,12 +51,14 @@ typeof ctx (Eq e1 e2) = case (typeof ctx e1, typeof ctx e2) of
                                                   Nothing
                           _                  -> Nothing
 typeof ctx (Bg e1 e2) = case (typeof ctx e1, typeof ctx e2) of 
-                           (Just TNum, Just TNum) -> Just TNum
+                           (Just TNum, Just TNum) -> Just TBool
                            _                      -> Nothing    
 typeof ctx (BE e1 e2) = case (typeof ctx e1, typeof ctx e2) of 
-                           (Just TNum, Just TNum) -> Just TNum
+                           (Just TNum, Just TNum) -> Just TBool
                            _                      -> Nothing   
--- typeof ctx (Let v e1 e2)   ??
+typeof ctx (Let v e1 e2) = case typeof ctx e1 of
+                                Just t1 -> typeof ((v, t1):ctx) e2
+                                _ -> Nothing
 typeof ctx (Pair e1 e2) = case (typeof ctx e1, typeof ctx e2) of 
                            (Just t1, Just t2) -> Just (TPair t1 t2)
                            _                  -> Nothing 

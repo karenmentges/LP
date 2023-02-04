@@ -69,7 +69,6 @@ isToken c = elem c "->&|!="
 lexer :: String -> [Token]
 lexer []        = [] 
 lexer ('+':cs)  = TokenAdd : lexer cs 
-lexer ('-':cs)  = TokenSub : lexer cs 
 lexer ('*':cs)  = TokenMul : lexer cs 
 lexer ('\\':cs) = TokenLam : lexer cs
 lexer (':':cs)  = TokenColon : lexer cs
@@ -112,4 +111,5 @@ lexSymbol cs = case span isToken cs of
                    (">", rest)  -> TokenBg     : lexer rest
                    (">=", rest) -> TokenBE     : lexer rest
                    ("=", rest)  -> TokenAtr    : lexer rest
+                   ("-", rest)  -> TokenSub    : lexer rest 
                    _            -> error "Lexical error: símbolo inválido!"

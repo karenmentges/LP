@@ -116,8 +116,7 @@ step (Let y e1 e2) | isvalue e1 = Just (subst y e1 e2)
                    | otherwise = case step e1 of 
                                     Just e1' -> Just (Let y e1' e2)
                                     _        -> Nothing                                     
-step (Pair e1 e2) | isvalue e1 && isvalue e2 = Just (Pair e1 e2)
-                  | isvalue e1 = case step e2 of 
+step (Pair e1 e2) | isvalue e1 = case step e2 of 
                                  Just e2' -> Just (Pair e1 e2')
                                  _        -> Nothing
                   | otherwise = case step e1 of 
